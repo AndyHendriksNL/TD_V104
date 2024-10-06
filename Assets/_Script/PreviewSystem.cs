@@ -93,6 +93,7 @@ public class PreviewSystem : MonoBehaviour
             position.y + previewYOffset,
             position.z);
     }
+
     internal void StartShowingRemovePreview()
     {
         cellIndicator.SetActive(true);

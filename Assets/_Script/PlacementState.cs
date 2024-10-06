@@ -10,8 +10,7 @@ public class PlacementState : IBuildingState
     Grid grid;
     PreviewSystem previewSystem;
     ObjectsDatabaseSO database;
-    GridData floorData;
-    GridData furnitureData;
+    GridData objectData;
     ObjectPlacer objectPlacer;
     SoundFeedback soundFeedback;
 
@@ -19,8 +18,7 @@ public class PlacementState : IBuildingState
                           Grid grid,
                           PreviewSystem previewSystem,
                           ObjectsDatabaseSO database,
-                          GridData floorData,
-                          GridData furnitureData,
+                          GridData objectData,
                           ObjectPlacer objectPlacer,
                           SoundFeedback soundFeedback)
     {
@@ -28,8 +26,7 @@ public class PlacementState : IBuildingState
         this.grid = grid;
         this.previewSystem = previewSystem;
         this.database = database;
-        this.floorData = floorData;
-        this.furnitureData = furnitureData;
+        this.objectData = objectData;
         this.objectPlacer = objectPlacer;
         this.soundFeedback = soundFeedback;
 
@@ -63,9 +60,7 @@ public class PlacementState : IBuildingState
         int index = objectPlacer.PlaceObject(database.objectsData[selectedObjectIndex].Prefab,
             grid.CellToWorld(gridPosition));
 
-        GridData selectedData = database.objectsData[selectedObjectIndex].ID == 0 ?
-            floorData :
-            furnitureData;
+        GridData selectedData = objectData;
         selectedData.AddObjectAt(gridPosition,
             database.objectsData[selectedObjectIndex].Size,
             database.objectsData[selectedObjectIndex].ID,
@@ -76,9 +71,7 @@ public class PlacementState : IBuildingState
 
     private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjectIndex)
     {
-        GridData selectedData = database.objectsData[selectedObjectIndex].ID == 0 ?
-            floorData :
-            furnitureData;
+        GridData selectedData = objectData;
 
         return selectedData.CanPlaceObjectAt(gridPosition, database.objectsData[selectedObjectIndex].Size);
     }

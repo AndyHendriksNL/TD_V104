@@ -7,22 +7,19 @@ public class RemovingState : IBuildingState
     private int gameObjectIndex = -1;
     Grid grid;
     PreviewSystem previewSystem;
-    GridData floorData;
-    GridData furnitureData;
+    GridData objectData;
     ObjectPlacer objectPlacer;
     SoundFeedback soundFeedback;
 
     public RemovingState(Grid grid,
                          PreviewSystem previewSystem,
-                         GridData floorData,
-                         GridData furnitureData,
+                         GridData objectData,
                          ObjectPlacer objectPlacer,
                          SoundFeedback soundFeedback)
     {
         this.grid = grid;
         this.previewSystem = previewSystem;
-        this.floorData = floorData;
-        this.furnitureData = furnitureData;
+        this.objectData = objectData;
         this.objectPlacer = objectPlacer;
         this.soundFeedback = soundFeedback;
         previewSystem.StartShowingRemovePreview();
@@ -36,13 +33,9 @@ public class RemovingState : IBuildingState
     public void OnAction(Vector3Int gridPosition)
     {
         GridData selectedData = null;
-        if (furnitureData.CanPlaceObjectAt(gridPosition, Vector2Int.one) == false)
+        if (objectData.CanPlaceObjectAt(gridPosition, Vector2Int.one) == false)
         {
-            selectedData = furnitureData;
-        }
-        else if (floorData.CanPlaceObjectAt(gridPosition, Vector2Int.one) == false)
-        {
-            selectedData = floorData;
+            selectedData = objectData;
         }
 
         if (selectedData == null)
@@ -65,8 +58,7 @@ public class RemovingState : IBuildingState
 
     private bool CheckIfSelectionIsValid(Vector3Int gridPosition)
     {
-        return !(furnitureData.CanPlaceObjectAt(gridPosition, Vector2Int.one) &&
-            floorData.CanPlaceObjectAt(gridPosition, Vector2Int.one));
+        return !(objectData.CanPlaceObjectAt(gridPosition, Vector2Int.one));
     }
 
     public void UpdateState(Vector3Int gridPosition)

@@ -13,7 +13,7 @@ public class PlacementSystem : MonoBehaviour
     [SerializeField] private ObjectPlacer objectPlacer;
     [SerializeField] private SoundFeedback soundFeedback;
 
-    private GridData floorData, furnitureData;
+    private GridData objectData;
     private List<GameObject> placedGameObjects = new();
     private Vector3Int lastDetectedPosition = Vector3Int.zero;
 
@@ -22,8 +22,7 @@ public class PlacementSystem : MonoBehaviour
     private void Start()
     {
         gridVisualization.SetActive(false);
-        floorData = new();
-        furnitureData = new();
+        objectData = new();
     }
     private void Update()
     {
@@ -47,19 +46,24 @@ public class PlacementSystem : MonoBehaviour
                                            grid,
                                            preview,
                                            database,
-                                           floorData,
-                                           furnitureData,
+                                           objectData,                                           
                                            objectPlacer,
                                            soundFeedback);
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
+        inputManager.OnRotate += RotatePreview;
+    }
+
+    private void InputManager_OnRotate()
+    {
+        throw new NotImplementedException();
     }
 
     public void StartRemoving()
     {
         StopPlacement();
         gridVisualization.SetActive(true);
-        buildingState = new RemovingState(grid, preview, floorData, furnitureData, objectPlacer, soundFeedback);
+        buildingState = new RemovingState(grid, preview, objectData, objectPlacer, soundFeedback);
         inputManager.OnClicked += PlaceStructure;
         inputManager.OnExit += StopPlacement;
     }
@@ -88,5 +92,9 @@ public class PlacementSystem : MonoBehaviour
         inputManager.OnExit -= StopPlacement;
         lastDetectedPosition = Vector3Int.zero;
         buildingState = null;
+    }
+    private void RotatePreview()
+    {
+        throw new NotImplementedException();
     }
 }
