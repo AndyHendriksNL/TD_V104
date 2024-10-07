@@ -10,9 +10,10 @@ public class GridData
     public void AddObjectAt(Vector3Int gridPosition,
                             Vector2Int objectSize,
                             int ID,
-                            int placedObjectIndex)
+                            int placedObjectIndex,
+                            Quaternion rotation)
     {
-        List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objectSize);
+        List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objectSize, rotation);
         PlacementData data = new PlacementData(positionToOccupy, ID, placedObjectIndex);
         foreach (var pos in positionToOccupy)
         {
@@ -22,12 +23,13 @@ public class GridData
         }
     }
 
-    private List<Vector3Int> CalculatePositions(Vector3Int gridPosition, Vector2Int objectSize)
+    private List<Vector3Int> CalculatePositions(Vector3Int gridPosition, Vector2Int objectSize, Quaternion rotation)
     {
         List<Vector3Int> returnVal = new();
-        for (int x = 0; x < objectSize.x; x++)
+        Vector2Int rotatedSize = GetRotatedSize(objectSize, rotation);
+        for (int x = 0; x < rotatedSize.x; x++)
         {
-            for (int y = 0; y < objectSize.y; y++)
+            for (int y = 0; y < rotatedSize.y; y++)
             {
                 returnVal.Add(gridPosition + new Vector3Int(x, 0, y));
             }
@@ -35,9 +37,20 @@ public class GridData
         return returnVal;
     }
 
-    public bool CanPlaceObjectAt(Vector3Int gridPosition, Vector2Int objectSize)
+    private Vector2Int GetRotatedSize(Vector2Int originalSize, Quaternion rotation)
     {
-        List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objectSize);
+        // Controleer of het object 90 of 270 graden is geroteerd
+        if (Mathf.Approximately(rotation.eulerAngles.y, 90) || Mathf.Approximately(rotation.eulerAngles.y, 270))
+        {
+            return new Vector2Int(originalSize.y, originalSize.x);
+        }
+
+        return originalSize; // Geen rotatie of 180 graden
+    }
+
+    public bool CanPlaceObjectAt(Vector3Int gridPosition, Vector2Int objectSize, Quaternion rotation)
+    {
+        List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objectSize, rotation);
         foreach (var pos in positionToOccupy)
         {
             if (placedObjects.ContainsKey(pos))

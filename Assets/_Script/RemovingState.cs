@@ -33,7 +33,12 @@ public class RemovingState : IBuildingState
     public void OnAction(Vector3Int gridPosition)
     {
         GridData selectedData = null;
-        if (objectData.CanPlaceObjectAt(gridPosition, Vector2Int.one) == false)
+
+        // find the object in the GridData placedObjects list and return index
+        gameObjectIndex = objectData.GetRepresentationIndex(gridPosition);
+
+        // if no index is found
+        if (gameObjectIndex != -1)
         {
             selectedData = objectData;
         }
@@ -46,25 +51,16 @@ public class RemovingState : IBuildingState
         else
         {
             soundFeedback.PlaySound(SoundType.Remove);
-            gameObjectIndex = selectedData.GetRepresentationIndex(gridPosition);
             if (gameObjectIndex == -1)
                 return;
             selectedData.RemoveObjectAt(gridPosition);
             objectPlacer.RemoveObjectAt(gameObjectIndex);
         }
         Vector3 cellPosition = grid.CellToWorld(gridPosition);
-        previewSystem.UpdatePosition(cellPosition, CheckIfSelectionIsValid(gridPosition));
-    }
-
-    private bool CheckIfSelectionIsValid(Vector3Int gridPosition)
-    {
-        return !(objectData.CanPlaceObjectAt(gridPosition, Vector2Int.one));
     }
 
     public void UpdateState(Vector3Int gridPosition)
     {
-        bool validity = CheckIfSelectionIsValid(gridPosition);
-        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), validity);
-    }
-
+        // nothing to update
+    }   
 }

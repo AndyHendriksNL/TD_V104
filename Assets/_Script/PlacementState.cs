@@ -57,14 +57,18 @@ public class PlacementState : IBuildingState
             return;
         }
         soundFeedback.PlaySound(SoundType.Place);
-        int index = objectPlacer.PlaceObject(database.objectsData[selectedObjectIndex].Prefab,
-            grid.CellToWorld(gridPosition));
+        Quaternion currentRotation = previewSystem.GetCurrentRotation();
+        int index = objectPlacer.PlaceObject(
+                database.objectsData[selectedObjectIndex].Prefab,
+                grid.CellToWorld(gridPosition),
+                currentRotation);
 
         GridData selectedData = objectData;
         selectedData.AddObjectAt(gridPosition,
             database.objectsData[selectedObjectIndex].Size,
             database.objectsData[selectedObjectIndex].ID,
-            index);
+            index,
+            currentRotation);
 
         previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), false);
     }
@@ -72,8 +76,9 @@ public class PlacementState : IBuildingState
     private bool CheckPlacementValidity(Vector3Int gridPosition, int selectedObjectIndex)
     {
         GridData selectedData = objectData;
+        Quaternion currentRotation = previewSystem.GetCurrentRotation();
 
-        return selectedData.CanPlaceObjectAt(gridPosition, database.objectsData[selectedObjectIndex].Size);
+        return selectedData.CanPlaceObjectAt(gridPosition, database.objectsData[selectedObjectIndex].Size, currentRotation);
     }
 
     public void UpdateState(Vector3Int gridPosition)

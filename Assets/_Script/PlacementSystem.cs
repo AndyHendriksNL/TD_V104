@@ -54,11 +54,6 @@ public class PlacementSystem : MonoBehaviour
         inputManager.OnRotate += RotatePreview;
     }
 
-    private void InputManager_OnRotate()
-    {
-        throw new NotImplementedException();
-    }
-
     public void StartRemoving()
     {
         StopPlacement();
@@ -90,11 +85,17 @@ public class PlacementSystem : MonoBehaviour
         buildingState.EndState();
         inputManager.OnClicked -= PlaceStructure;
         inputManager.OnExit -= StopPlacement;
+        inputManager.OnRotate -= RotatePreview;
         lastDetectedPosition = Vector3Int.zero;
         buildingState = null;
     }
     private void RotatePreview()
     {
-        throw new NotImplementedException();
+        //Debug.Log("RotatePreview aangeroepen");  // Controleer of deze functie wordt aangeroepen
+
+        if (preview != null)
+        {
+            preview.RotatePreview();  // Roep de functie in PreviewSystem aan om te roteren
+        }
     }
 }
